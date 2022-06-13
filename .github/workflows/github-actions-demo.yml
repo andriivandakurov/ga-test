@@ -11,3 +11,8 @@ jobs:
         with:
           output: swagger-ui
           spec-file: swagger.json
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          publish_dir: swagger-ui
