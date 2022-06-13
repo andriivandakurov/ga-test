@@ -1,0 +1,1747 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Print Provider Portal API",
+        "description": "The front-end oriented API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "{baseurl}/",
+            "description": "Server parameters",
+            "variables": {
+                "baseurl": {
+                    "enum": [
+                        "http://pp-portal.localtest.me",
+                        "https://pp-portal-stage.printify.com",
+                        "https://pp-portal-preview.printify.com"
+                    ],
+                    "default": "http://pp-portal.localtest.me"
+                }
+            }
+        }
+    ],
+    "paths": {
+        "/api/account/{id}": {
+            "delete": {
+                "tags": [
+                    "Account"
+                ],
+                "operationId": "5f83fc85a5c433f2fc5b4e038bd11653",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of Account to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Returns 204 if Account was deleted successfully"
+                    },
+                    "400": {
+                        "description": "Returns 400 in case of an error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Account"
+                ],
+                "operationId": "56e85c95a4400c316b2a74447476b526",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of Account to promote/demote",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AccountUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Returns 204 if Account was updated successfully"
+                    },
+                    "400": {
+                        "description": "Returns 400 in case of an error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Authorization"
+                ],
+                "operationId": "ddfb8e296241a125a952cc6dc66ef3f8",
+                "responses": {
+                    "204": {
+                        "description": "Returns 204 if account was logged out successfully"
+                    },
+                    "500": {
+                        "description": "Returns 500 in case of an error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/blueprints_list": {
+            "post": {
+                "tags": [
+                    "Blueprint List"
+                ],
+                "operationId": "816551a5d61dcc135191aa784ad201d1",
+                "responses": {
+                    "200": {
+                        "description": "Returns 200 in any case",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BlueprintListResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/blueprint/{blueprintId}": {
+            "post": {
+                "tags": [
+                    "Blueprint"
+                ],
+                "operationId": "4d9be746506e8e94c5823c05f019a14b",
+                "responses": {
+                    "200": {
+                        "description": "Returns 200 in any case",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ListBlueprint"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Returns 404 when blueprint not found, or there is no such blueprint for current PP"
+                    }
+                }
+            }
+        },
+        "/api/blueprint/{blueprintId}/variants": {
+            "post": {
+                "tags": [
+                    "Blueprint Variants List"
+                ],
+                "operationId": "a1c73fe16c34af887fb8b782a1bdb601",
+                "responses": {
+                    "200": {
+                        "description": "Returns 200 in any case",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BlueprintVariantsListResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/internal/print-providers": {
+            "get": {
+                "tags": [
+                    "Internal"
+                ],
+                "operationId": "26d5718d9d1f80e5c59c88f4e16bbe30",
+                "responses": {
+                    "200": {
+                        "description": "List of Print Providers",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ListPrintProvider"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "When authorization header is not recognized or present"
+                    }
+                },
+                "security": [
+                    {
+                        "privateKey": []
+                    }
+                ]
+            }
+        },
+        "/internal/print-providers/{printProviderId}": {
+            "get": {
+                "tags": [
+                    "Internal"
+                ],
+                "operationId": "59749da37bfa85418b120c44e525789c",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "required": true,
+                        "name": "printProviderId",
+                        "example": "29"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Single Print Provider that matches the ID",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ListPrintProvider"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "When authorization header is not recognized or present"
+                    },
+                    "404": {
+                        "description": "When Print Provider was not found"
+                    }
+                },
+                "security": [
+                    {
+                        "privateKey": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Internal"
+                ],
+                "operationId": "7ef619a0aeda3c142d92969e01739474",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "required": true,
+                        "name": "printProviderId",
+                        "example": "29"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PrintProviderUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Update successful, no response data"
+                    },
+                    "400": {
+                        "description": "When request has invalid or missing data"
+                    },
+                    "401": {
+                        "description": "When authorization header is not recognized or present"
+                    },
+                    "404": {
+                        "description": "When Print Provider was not found"
+                    }
+                },
+                "security": [
+                    {
+                        "privateKey": []
+                    }
+                ]
+            }
+        },
+        "/internal/facilities": {
+            "get": {
+                "tags": [
+                    "Internal"
+                ],
+                "operationId": "07d589649483a321dbd256c416bad859",
+                "responses": {
+                    "200": {
+                        "description": "List of Facilities",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ListFacility"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "When authorization header is not recognized or present"
+                    }
+                },
+                "security": [
+                    {
+                        "privateKey": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Internal"
+                ],
+                "operationId": "303316961c1c34c1468f479d4fa6a34a",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FacilityCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Create successful, no response data"
+                    },
+                    "400": {
+                        "description": "When request could not be processed"
+                    },
+                    "401": {
+                        "description": "When authorization header is not recognized or present"
+                    },
+                    "404": {
+                        "description": "When Print Provider was not found"
+                    }
+                },
+                "security": [
+                    {
+                        "privateKey": []
+                    }
+                ]
+            }
+        },
+        "/internal/facilities/{facilityId}": {
+            "get": {
+                "tags": [
+                    "Internal"
+                ],
+                "operationId": "c8e9bb69bad4bef4f9daca0c20e96d43",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "required": true,
+                        "name": "facilityId",
+                        "example": "110"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Single Facility that matches the ID",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ListFacility"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "When authorization header is not recognized or present"
+                    },
+                    "404": {
+                        "description": "When Facility was not found"
+                    }
+                },
+                "security": [
+                    {
+                        "privateKey": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Internal"
+                ],
+                "operationId": "fef45e04244acdec43dabb9efebb8e13",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "required": true,
+                        "name": "facilityId",
+                        "example": "123"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateFacilityCommand"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Update successful, no response data"
+                    },
+                    "400": {
+                        "description": "When request has invalid or missing data"
+                    },
+                    "401": {
+                        "description": "When authorization header is not recognized or present"
+                    },
+                    "404": {
+                        "description": "When Facility was not found"
+                    }
+                },
+                "security": [
+                    {
+                        "privateKey": []
+                    }
+                ]
+            }
+        },
+        "/api/looker-embed-url/forecasting": {
+            "get": {
+                "tags": [
+                    "Looker"
+                ],
+                "description": "Get url for Forecasting dashboard",
+                "operationId": "0acf105a2d24cbe61e94589697857ded",
+                "responses": {
+                    "200": {
+                        "description": "Returns url to embed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmbedUrl"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized to view this dashboard"
+                    }
+                }
+            }
+        },
+        "/api/looker-embed-url/quality": {
+            "get": {
+                "tags": [
+                    "Looker"
+                ],
+                "description": "Get url for Quality dashboard",
+                "operationId": "37c0754f01243d65cd6c4ca9b5490659",
+                "responses": {
+                    "200": {
+                        "description": "Returns url to embed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmbedUrl"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized to view this dashboard"
+                    }
+                }
+            }
+        },
+        "/api/looker-embed-url/production-speed": {
+            "get": {
+                "tags": [
+                    "Looker"
+                ],
+                "description": "Get url for Production Speed dashboard",
+                "operationId": "98e2dcb70c98a8b0ade9896d181fbbe9",
+                "responses": {
+                    "200": {
+                        "description": "Returns url to embed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmbedUrl"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized to view this dashboard"
+                    }
+                }
+            }
+        },
+        "/api/looker-embed-url/cxm": {
+            "get": {
+                "tags": [
+                    "Looker"
+                ],
+                "description": "Get url for CxM dashboard",
+                "operationId": "39082212c3dd650bf989cf08970afc4f",
+                "responses": {
+                    "200": {
+                        "description": "Returns url to embed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmbedUrl"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized to view this dashboard"
+                    }
+                }
+            }
+        },
+        "/api/orders/{orderId}": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "description": "Get details of Regular Order",
+                "operationId": "33285a0b1cd27b7489943ee735048f08",
+                "responses": {
+                    "200": {
+                        "description": "Returns the order details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderDetails"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Order not found"
+                    }
+                }
+            }
+        },
+        "/api/print_provider": {
+            "post": {
+                "tags": [
+                    "Print Provider"
+                ],
+                "operationId": "56b8d61bedfef5b122df9a44605250cd",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreatePrintProviderRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Returns 204 if Print Provider and Account were created successfully"
+                    },
+                    "400": {
+                        "description": "Returns 400 in case of an error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/express-orders/notifications": {
+            "get": {
+                "tags": [
+                    "Printify Express"
+                ],
+                "description": "Authenticate subscription to Mercure topic and return topic data",
+                "operationId": "708abc6a25afdb3e8fb2ae46e05c3cd1",
+                "responses": {
+                    "200": {
+                        "description": "Returns Mercure connection details and sets proper auth Cookie",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotificationAuthorizationResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized to access this resource"
+                    }
+                }
+            }
+        },
+        "/api/express-orders/status-summary": {
+            "get": {
+                "tags": [
+                    "Printify Express"
+                ],
+                "description": "Get an order count for each status",
+                "operationId": "e987fb30830229f117f272d41af68f2d",
+                "responses": {
+                    "200": {
+                        "description": "Returns an order count for each status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StatusSummaryResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized to access this resource"
+                    }
+                }
+            }
+        },
+        "/api/express-orders/export": {
+            "get": {
+                "tags": [
+                    "Printify Express"
+                ],
+                "description": "Export orders matching selected filters to csv file",
+                "operationId": "ba54459894e80de004cb267d5918dc77",
+                "parameters": [
+                    {
+                        "name": "slaStatuses[]",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "schema": "SlaStatusQueryParameter",
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "behind-schedule",
+                                    "expiring-soon",
+                                    "on-schedule"
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "name": "lineItemStatuses[]",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "schema": "LowestItemStatusQueryParameter",
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "created",
+                                    "picked",
+                                    "printed",
+                                    "packaged"
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the CSV"
+                    },
+                    "400": {
+                        "description": "Empty or unrecognised filters selected"
+                    },
+                    "403": {
+                        "description": "Unauthorized to access this resource"
+                    },
+                    "404": {
+                        "description": "No orders matching selected filters found"
+                    }
+                }
+            }
+        },
+        "/api/express-orders/{slaStatus}/{lowestItemStatus}": {
+            "get": {
+                "tags": [
+                    "Printify Express"
+                ],
+                "description": "Get a list of express orders for specific SLA status",
+                "operationId": "bf193770d1eee7ebfccaf98d8816e5c3",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "required": true,
+                        "name": "slaStatus",
+                        "schema": {
+                            "schema": "SlaStatusParameter",
+                            "type": "string",
+                            "enum": [
+                                "behind-schedule",
+                                "expiring-soon",
+                                "on-schedule"
+                            ]
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "required": false,
+                        "name": "lowestItemStatus",
+                        "schema": {
+                            "schema": "LowestItemStatusParameter",
+                            "type": "string",
+                            "enum": [
+                                "created",
+                                "picked",
+                                "printed",
+                                "packaged",
+                                "valid"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns a list of orders",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExpressOrderListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized to access this resource"
+                    }
+                }
+            }
+        },
+        "/api/print_provider/working_hours": {
+            "post": {
+                "tags": [
+                    "Print Provider"
+                ],
+                "operationId": "6fd978d6a10d65f633b0f2337e4da358",
+                "responses": {
+                    "200": {
+                        "description": "Returns working hours on success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkingHoursResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Returns 404 if working hours couldn't be found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "SlaStatusQueryParameter": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "enum": [
+                        "behind-schedule",
+                        "expiring-soon",
+                        "on-schedule"
+                    ]
+                }
+            },
+            "LowestItemStatusQueryParameter": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "enum": [
+                        "created",
+                        "picked",
+                        "printed",
+                        "packaged"
+                    ]
+                }
+            },
+            "SlaStatusParameter": {
+                "type": "string",
+                "enum": [
+                    "behind-schedule",
+                    "expiring-soon",
+                    "on-schedule"
+                ]
+            },
+            "LowestItemStatusParameter": {
+                "type": "string",
+                "enum": [
+                    "created",
+                    "picked",
+                    "printed",
+                    "packaged",
+                    "valid"
+                ]
+            },
+            "AbstractAddress": {
+                "properties": {
+                    "address1": {
+                        "type": "string",
+                        "example": "Example Street",
+                        "nullable": true
+                    },
+                    "address2": {
+                        "type": "string",
+                        "example": "123",
+                        "nullable": true
+                    },
+                    "city": {
+                        "type": "string",
+                        "example": "London",
+                        "nullable": true
+                    },
+                    "country": {
+                        "type": "string",
+                        "example": "UK",
+                        "nullable": true
+                    },
+                    "region": {
+                        "type": "string",
+                        "example": "Test region name",
+                        "nullable": true
+                    },
+                    "zip": {
+                        "type": "string",
+                        "example": "12345",
+                        "nullable": true
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "test@test.com",
+                        "nullable": true
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "123 456 789 0",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "AccountUpdateRequest": {
+                "properties": {
+                    "role": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "BlueprintListResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/ListBlueprint"
+                }
+            },
+            "BlueprintVariantsListResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/ListVariant"
+                }
+            },
+            "ListBlueprint": {
+                "properties": {
+                    "blueprintId": {},
+                    "blueprintAvailable": {
+                        "type": "boolean"
+                    },
+                    "printProviderAvailable": {
+                        "type": "boolean"
+                    },
+                    "launched": {
+                        "type": "boolean"
+                    },
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "brand": {
+                        "type": "string"
+                    },
+                    "model": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ListVariant": {
+                "properties": {
+                    "variantId": {
+                        "type": "integer",
+                        "example": "12345"
+                    },
+                    "sku": {
+                        "type": "string",
+                        "example": "3001_ARMY_XS"
+                    },
+                    "label": {
+                        "type": "string",
+                        "example": "Army / XS"
+                    },
+                    "blankPrice": {
+                        "type": "integer",
+                        "example": "450"
+                    },
+                    "status": {
+                        "example": "in-stock"
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "example": "100",
+                        "nullable": true
+                    },
+                    "synchronizationEnabled": {
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "lastUpdate": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-03-22T23:31:01+00:00",
+                        "nullable": true
+                    },
+                    "version": {
+                        "type": "integer",
+                        "example": "123",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ErrorResponse": {
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "FacilityCreateRequest": {
+                "properties": {
+                    "printProviderId": {
+                        "type": "integer",
+                        "example": "123"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "New facility name"
+                    }
+                },
+                "type": "object"
+            },
+            "FacilityListPrintProvider": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Some Print Provider name"
+                    }
+                },
+                "type": "object"
+            },
+            "FacilityListResponse": {
+                "properties": {
+                    "facilities": {
+                        "description": "List of one or many facilities",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ListFacility"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "ListFacility": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Facility name"
+                    },
+                    "externalId": {
+                        "type": "string",
+                        "example": "Facility external id",
+                        "nullable": true
+                    },
+                    "enabled": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "visible": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "orderRoutingEnabled": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "isInternational": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "sequence": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "capacity": {
+                        "type": "integer",
+                        "example": "123"
+                    },
+                    "printProvider": {
+                        "$ref": "#/components/schemas/FacilityListPrintProvider"
+                    },
+                    "address": {
+                        "$ref": "#/components/schemas/Address"
+                    },
+                    "returnAddress": {
+                        "$ref": "#/components/schemas/Address"
+                    },
+                    "brandingOptions": {
+                        "description": "Array of strings for configuration across the platform",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "details": {
+                        "$ref": "#/components/schemas/PrintProviderDetails"
+                    }
+                },
+                "type": "object"
+            },
+            "NotificationAuthorizationResponse": {
+                "properties": {
+                    "hubUrl": {
+                        "type": "string",
+                        "example": "http://pp-portal-mercure.localtest.me/.well-known/mercure"
+                    },
+                    "topic": {
+                        "type": "string",
+                        "example": "http://pp-portal.localtest.me/notifications/express-orders/facility/666"
+                    }
+                },
+                "type": "object"
+            },
+            "AbstractOrderDetails": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "maxLength": 24,
+                        "minLength": 24,
+                        "example": "629d048b19b7dc13c24280f2"
+                    },
+                    "referenceId": {
+                        "description": "id assigned by PrintProvider's system",
+                        "type": "string"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/LineItem"
+                        }
+                    },
+                    "addressTo": {
+                        "$ref": "#/components/schemas/AddressTo"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "AddressTo": {
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/AbstractAddress"
+                    },
+                    {
+                        "properties": {
+                            "company": {
+                                "type": "string",
+                                "nullable": true
+                            },
+                            "firstName": {
+                                "type": "string",
+                                "nullable": true
+                            },
+                            "lastName": {
+                                "type": "string",
+                                "nullable": true
+                            }
+                        }
+                    }
+                ]
+            },
+            "LineItem": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "vd"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "created",
+                            "picked",
+                            "printed",
+                            "packaged",
+                            "valid"
+                        ]
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "sku": {
+                        "type": "string",
+                        "example": "BC5000-XS",
+                        "nullable": true
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "example": "2",
+                        "nullable": true
+                    },
+                    "prints": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PrintFile"
+                        }
+                    },
+                    "mockupFiles": {
+                        "type": "object",
+                        "example": {
+                            "front": "https://images.printify.com/some/mockup/image.jpg"
+                        },
+                        "additionalProperties": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Unisex Jersey Short Sleeve Tee",
+                        "nullable": true
+                    },
+                    "brand": {
+                        "type": "string",
+                        "example": "Bella Canvas",
+                        "nullable": true
+                    },
+                    "model": {
+                        "type": "string",
+                        "example": "5000",
+                        "nullable": true
+                    },
+                    "label": {
+                        "type": "string",
+                        "example": "Black / XS",
+                        "nullable": true
+                    },
+                    "serviceLevelAgreement": {
+                        "nullable": true,
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/SLA"
+                            }
+                        ]
+                    }
+                },
+                "type": "object"
+            },
+            "OrderDetails": {
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/AbstractOrderDetails"
+                    },
+                    {
+                        "properties": {
+                            "status": {
+                                "type": "string",
+                                "enum": [
+                                    "intake",
+                                    "sent_to_production",
+                                    "shipped",
+                                    "rejected",
+                                    "canceled"
+                                ],
+                                "example": "sent_to_production"
+                            },
+                            "serviceLevelAgreement": {
+                                "nullable": true,
+                                "oneOf": [
+                                    {
+                                        "$ref": "#/components/schemas/SLA"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            "PrintFile": {
+                "properties": {
+                    "position": {
+                        "type": "string",
+                        "example": "front"
+                    },
+                    "printFile": {
+                        "type": "string",
+                        "example": "https://images.printify.com/some/image.png"
+                    },
+                    "qualityControlImage": {
+                        "type": "string",
+                        "example": "https://images.printify.com/some/mockup/image.png"
+                    }
+                },
+                "type": "object"
+            },
+            "SLA": {
+                "properties": {
+                    "days": {
+                        "type": "integer",
+                        "example": "3"
+                    },
+                    "percentage": {
+                        "type": "number",
+                        "format": "float",
+                        "example": "33.33"
+                    },
+                    "slaDate": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Address": {
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/AbstractAddress"
+                    }
+                ]
+            },
+            "CreatePrintProviderRequest": {
+                "properties": {
+                    "printProviderName": {
+                        "type": "string"
+                    },
+                    "adminAccountEmail": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ListPrintProvider": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Print Provider name"
+                    },
+                    "enabled": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "visible": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "orderRoutingEnabled": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "isInternational": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "sequence": {
+                        "type": "integer",
+                        "example": "2"
+                    },
+                    "capacity": {
+                        "type": "integer",
+                        "example": "333"
+                    },
+                    "facilities": {
+                        "$ref": "#/components/schemas/PrintProviderListFacility"
+                    },
+                    "address": {
+                        "$ref": "#/components/schemas/Address"
+                    },
+                    "returnAddress": {
+                        "$ref": "#/components/schemas/Address"
+                    },
+                    "brandingOptions": {
+                        "description": "Array of strings for configuration across the platform",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "details": {
+                        "$ref": "#/components/schemas/PrintProviderDetails"
+                    }
+                },
+                "type": "object"
+            },
+            "PrintProviderDetails": {
+                "properties": {
+                    "logo": {
+                        "type": "string",
+                        "example": "42364567457g545f745788.jpg",
+                        "nullable": true
+                    },
+                    "country": {
+                        "type": "string",
+                        "example": "United States",
+                        "nullable": true
+                    },
+                    "countryCode": {
+                        "type": "string",
+                        "example": "US",
+                        "nullable": true
+                    },
+                    "location": {
+                        "type": "string",
+                        "example": "Fulfilled in Miami, Florida",
+                        "nullable": true
+                    },
+                    "avgProductionTime": {
+                        "type": "string",
+                        "example": "2 business days",
+                        "nullable": true
+                    },
+                    "employees": {
+                        "type": "string",
+                        "example": "11-50",
+                        "nullable": true
+                    },
+                    "inBusinessSince": {
+                        "type": "string",
+                        "example": "2016",
+                        "nullable": true
+                    },
+                    "website": {
+                        "type": "string",
+                        "example": "http://coolors.co",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Good description here.",
+                        "nullable": true
+                    },
+                    "htmlDescription": {
+                        "type": "string",
+                        "example": "<b>Good</b> description here.",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "PrintProviderListFacility": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Some facility name"
+                    }
+                },
+                "type": "object"
+            },
+            "PrintProviderListResponse": {
+                "properties": {
+                    "printProviders": {
+                        "description": "List of many print providers",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ListPrintProvider"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "PrintProviderUpdateRequest": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Print Provider name"
+                    },
+                    "enabled": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "visible": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "orderRoutingEnabled": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "isInternational": {
+                        "type": "boolean",
+                        "example": "false"
+                    },
+                    "sequence": {
+                        "type": "integer",
+                        "example": "11"
+                    },
+                    "capacity": {
+                        "type": "integer",
+                        "example": "2000"
+                    },
+                    "address": {
+                        "$ref": "#/components/schemas/Address"
+                    },
+                    "returnAddress": {
+                        "$ref": "#/components/schemas/Address"
+                    },
+                    "brandingOptions": {
+                        "description": "Array of strings for configuration across the platform",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalDetails": {
+                        "$ref": "#/components/schemas/PrintProviderDetails"
+                    }
+                },
+                "type": "object"
+            },
+            "Shift": {
+                "properties": {
+                    "startTime": {
+                        "description": "Has value if schedule is set to 'manual', null otherwise",
+                        "type": "string",
+                        "example": "08:30"
+                    },
+                    "endTime": {
+                        "description": "Has value if schedule is set to 'manual', null otherwise",
+                        "type": "string",
+                        "example": "21:45"
+                    }
+                },
+                "type": "object"
+            },
+            "WorkingDay": {
+                "properties": {
+                    "shifts": {
+                        "description": "Has value if schedule is set to 'manual', null otherwise",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Shift"
+                        },
+                        "nullable": true
+                    },
+                    "schedule": {
+                        "type": "string",
+                        "enum": [
+                            "manual",
+                            "24h",
+                            "closed"
+                        ]
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-03-29"
+                    }
+                },
+                "type": "object"
+            },
+            "WorkingHoursResponse": {
+                "properties": {
+                    "timezone": {
+                        "type": "string",
+                        "example": "EST (-6:00)"
+                    },
+                    "regularWorkingHours": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkingDay"
+                        }
+                    },
+                    "specialWorkingHours": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkingDay"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "ExpressListOrder": {
+                "properties": {
+                    "orderId": {
+                        "type": "string",
+                        "example": "624d029f4ab7b3683867ee75"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "carrierPickup": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "lowestItemStatus": {
+                        "type": "string",
+                        "enum": [
+                            "created",
+                            "picked",
+                            "printed",
+                            "packaged",
+                            "valid"
+                        ]
+                    },
+                    "statusTransition": {
+                        "$ref": "#/components/schemas/StatusTransition"
+                    },
+                    "referenceId": {
+                        "type": "string",
+                        "example": "43658423"
+                    },
+                    "itemsCount": {
+                        "type": "integer",
+                        "example": "2"
+                    }
+                },
+                "type": "object"
+            },
+            "ExpressOrderListResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/ExpressListOrder"
+                }
+            },
+            "StatusOrderCount": {
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "created",
+                            "picked",
+                            "printed",
+                            "packaged",
+                            "valid"
+                        ],
+                        "example": "picked"
+                    },
+                    "count": {
+                        "type": "integer",
+                        "example": "25"
+                    }
+                },
+                "type": "object"
+            },
+            "StatusSummaryResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/StatusOrderCount"
+                }
+            },
+            "StatusTransition": {
+                "properties": {
+                    "expectedStatus": {
+                        "type": "string",
+                        "enum": [
+                            "created",
+                            "picked",
+                            "printed",
+                            "packaged",
+                            "shipped"
+                        ],
+                        "example": "picked"
+                    },
+                    "deadline": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateFacilityCommand": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Facility name"
+                    },
+                    "externalId": {
+                        "type": "string",
+                        "example": "Facility id used for API communication",
+                        "nullable": true
+                    },
+                    "enabled": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "visible": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "orderRoutingEnabled": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "isInternational": {
+                        "type": "boolean",
+                        "example": "false"
+                    },
+                    "sequence": {
+                        "type": "integer",
+                        "example": "11"
+                    },
+                    "capacity": {
+                        "type": "integer",
+                        "example": "2000"
+                    },
+                    "address": {
+                        "$ref": "#/components/schemas/Address"
+                    },
+                    "returnAddress": {
+                        "$ref": "#/components/schemas/Address"
+                    },
+                    "brandingOptions": {
+                        "description": "Array of strings for configuration across the platform",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalDetails": {
+                        "$ref": "#/components/schemas/PrintProviderDetails"
+                    }
+                },
+                "type": "object"
+            },
+            "EmbedUrl": {
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
+            },
+            "privateKey": {
+                "type": "apiKey",
+                "name": "private-key",
+                "in": "header"
+            }
+        }
+    },
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "Blueprint"
+        },
+        {
+            "name": "Internal"
+        },
+        {
+            "name": "Looker"
+        },
+        {
+            "name": "Print Provider"
+        },
+        {
+            "name": "Print Provider"
+        }
+    ]
+}
