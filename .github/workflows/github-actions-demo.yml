@@ -6,3 +6,6 @@ jobs:
     steps:
       - name: Swagger UI Action
         uses: Legion2/swagger-ui-action@v1.1.5
+        with:
+          output: swagger-ui
+          spec-file: swagger.json
